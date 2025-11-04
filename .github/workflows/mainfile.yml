@@ -1,24 +1,32 @@
-name: Manual Maven Build and Test
+name: Manual Maven Build and Test111
 
 on:
-  workflow_dispatch:  # Allows manual triggering from GitHub UI
+  workflow_dispatch:  # Manual trigger
 
 jobs:
-  buildjob:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'   # or 'zulu' / 'corretto' as you prefer
-          java-version: '21'
+          distribution: 'temurin'
+          java-version: '17'
 
       - name: Build with Maven
-        run: mvn -B clean package
+        run: mvn -B clean compile
+
+      - name: List compiled class files
+        run: |
+          echo "Listing compiled .class files:"
+          find target/classes -type f -name "*.class"
+
+      - name: Package with Maven
+        run: mvn -B package
 
       - name: Run unit tests
         run: mvn test
@@ -28,3 +36,4 @@ jobs:
         with:
           name: maven-artifact
           path: target/*.jar
+
